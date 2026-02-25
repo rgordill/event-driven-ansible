@@ -36,7 +36,7 @@ jobs:
     steps:
       - name: Determine matrix
         id: generate_matrix
-        uses: coactions/dynamic-matrix@main # v3
+        uses: ansible/actions/matrix@v0
         with:
           min_python: "3.9"
           max_python: "3.12"
@@ -57,7 +57,7 @@ jobs:
             staging: tox -e py311-staging
           # ^ arm64 runner is using py311 for matching python version used in AAP 2.5
           # building docs on macos is needed to avoid diverging behavior
-          platforms: linux,macos,linux-arm64:ubuntu-24.04-arm64-2core
+          platforms: linux,macos,linux-arm64:ubuntu-24.04-arm
           skip_explode: "1"
   build:
     name: ${{ matrix.name }}
@@ -74,7 +74,7 @@ jobs:
       matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
     steps:
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0 # needed by setuptools-scm
           path: ansible_collections/ansible/eda
@@ -104,7 +104,7 @@ jobs:
           java-version: "17"
 
       - name: Set pre-commit cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         if: ${{ contains(matrix.name, 'lint') }}
         with:
           path: |
@@ -137,7 +137,7 @@ jobs:
         if: ${{ matrix.command5 }}
 
       - name: Archive logs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: ${{ matrix.name != 'lint' }}
         with:
           name: logs-${{ matrix.name }}
@@ -149,7 +149,7 @@ jobs:
             ansible_collections/ansible/eda/tests/output/junit/*.xml
 
       - name: Archive collection archive
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         # we need to do for only one job, 'tox -e docs' when run on linux:
         if: ${{ matrix.name == 'docs-sanity' }}
         with:
@@ -182,7 +182,7 @@ jobs:
 
     steps:
       # checkout needed for codecov action which needs codecov.yml file
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Set up Python # likely needed for coverage
         uses: actions/setup-python@v6
@@ -192,7 +192,7 @@ jobs:
       - run: pip3 install 'coverage>=7.5.1'
 
       - name: Merge logs into a single archive
-        uses: actions/upload-artifact/merge@v4
+        uses: actions/upload-artifact/merge@v6
         with:
           name: logs
           include-hidden-files: true
@@ -202,7 +202,7 @@ jobs:
           separate-directories: true
 
       - name: Download artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           name: logs
           path: .
@@ -225,7 +225,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload coverage data
-        uses: codecov/codecov-action@v5.5.1
+        uses: codecov/codecov-action@v5.5.2
         with:
           name: ${{ matrix.name }}
           # verbose: true # optional (default = false)
@@ -249,10 +249,10 @@ jobs:
     environment: release
     if: github.event_name == 'push' && github.ref_type == 'tag'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Download the artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           name: collection-artifact
 

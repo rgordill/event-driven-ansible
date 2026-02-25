@@ -10,6 +10,41 @@ This collection contains event source plugins, event filters and example ruleboo
 
 The primary purpose of this collection is to reduce manual tasks and deliver more efficient mission-critical workflows. By leveraging this collection, organizations can automate a variety of error-prone and time-consuming tasks and respond to changing conditions in any IT domain across IT environments for better agility and resiliency.
 
+## Important: Plugin Migration
+
+Several event sources and event filters have been migrated from this collection to ansible-rulebook as builtins. **Users should update their rulebooks to use the `eda.builtin` namespace.**
+
+### Migrated Event Sources
+
+- `ansible.eda.pg_listener` → `eda.builtin.pg_listener`
+- `ansible.eda.generic` → `eda.builtin.generic`
+- `ansible.eda.range` → `eda.builtin.range`
+- `ansible.eda.webhook` → `eda.builtin.webhook`
+
+### Migrated Event Filters
+
+- `ansible.eda.insert_hosts_to_meta` → `eda.builtin.insert_hosts_to_meta`
+- `ansible.eda.json_filter` → `eda.builtin.json_filter`
+- `ansible.eda.normalize_keys` → `eda.builtin.normalize_keys`
+- `ansible.eda.dashes_to_underscores` → `eda.builtin.dashes_to_underscores`
+
+**Note:** For backwards compatibility, these plugins remain available in the `ansible.eda` namespace and are automatically mapped to `eda.builtin`. However, they are no longer actively maintained in this collection. Please update your rulebooks to use the `eda.builtin` versions.
+
+### Deprecated Event Sources
+
+- `ansible.eda.aws_cloudtrail` → `amazon.aws.aws_cloudtrail`
+- `ansible.eda.aws_sqs_queue` → `amazon.aws.aws_sqs_queue`
+- `ansible.eda.azure_service_bus` → `azure.azcollection.azure_service_bus`
+- `ansible.eda.file` → `community.eda.file`
+- `ansible.eda.file_watch` → `community.eda.file_watch`
+- `ansible.eda.journald` → `community.eda.journald`
+- `ansible.eda.tick` → use either `eda.builtin.generic` or `eda.builtin.range`
+- `ansible.eda.url_check` → `community.eda.url_check`
+
+### Deprecated Event Filters
+
+- `ansible.eda.noop` -- no replacement for it, simply stop using it
+
 ## Requirements
 
 ### Ansible version compatibility
@@ -107,6 +142,12 @@ See [CONTRIBUTING.md](https://github.com/ansible/event-driven-ansible/blob/main/
 
 - [Ansible Community Guide](https://docs.ansible.com/ansible/latest/community/index.html) - Details on contributing to Ansible
 - [Contributing to Collections](https://docs.ansible.com/ansible/devel/dev_guide/developing_collections.html#contributing-to-collections) - How to check out collection git repositories correctly
+
+## Support
+
+If you installed this collection from either from Galaxy or GitHub, there may community help available on the [Ansible Forum](https://forum.ansible.com/).
+
+Red Hat customers are entitled to support for certified content through Ansible Automation Platform (AAP) using the **Create issue** button on the top right corner.
 
 ## Release notes
 
